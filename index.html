@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>I Love You ❤️</title>
+    <title>I love you 💖</title>
     <style>
         body {
             margin: 0;
@@ -38,22 +38,34 @@
 
     <script>
         const totalMessages = 10; // Update this number to match your total recordings
-        let lastMessage = null; // Variable to track the last played message
+        let messageQueue = []; // Holds the shuffled list of messages
 
+        // Function to shuffle the messages
+        function shuffleMessages() {
+            const messages = Array.from({ length: totalMessages }, (_, i) => i + 1);
+            for (let i = messages.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [messages[i], messages[j]] = [messages[j], messages[i]];
+            }
+            return messages;
+        }
+
+        // Function to play a random message
         function playRandomMessage() {
+            // If the queue is empty, shuffle a new order
+            if (messageQueue.length === 0) {
+                messageQueue = shuffleMessages();
+            }
+
+            // Get the next message from the queue
+            const messageNumber = messageQueue.shift();
+
             // Remove the existing audio element if it exists
             const currentAudio = document.querySelector('audio');
             if (currentAudio) {
                 currentAudio.pause();
                 currentAudio.remove();
             }
-
-            // Generate a new random message number different from the last one
-            let messageNumber;
-            do {
-                messageNumber = Math.floor(Math.random() * totalMessages) + 1;
-            } while (messageNumber === lastMessage);
-            lastMessage = messageNumber;
 
             // Create and play the audio element
             const audio = new Audio(`audio/ily${messageNumber}.mp3`);
